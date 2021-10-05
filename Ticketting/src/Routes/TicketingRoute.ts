@@ -4,7 +4,7 @@ import  'express-async-errors'
 import {authcheck} from '../Middlewares/auth'
 import {GeneralErrors, InvalidParamsError} from '@arisorg/common'
 import {ticketModel} from '../Models/TicketModel'
-
+import {stan} from '../Events/Publisher'
 const { body, validationResult } = require('express-validator');
 const TicketingRouter=express.Router()
 
@@ -18,6 +18,7 @@ TicketingRouter.post('/api/ticketing',authcheck,body('title').not().isEmpty().wi
         title,price,userId:req.userId
     })
     const savedTicket=await ticket.save()
+    stan.publish("ticket:created", JSON.stringify({title,price,userId:req.userId}))
     res.status(201).send(savedTicket)
 })
 TicketingRouter.get('/api/ticketing/:id',authcheck,async(req,res)=>{

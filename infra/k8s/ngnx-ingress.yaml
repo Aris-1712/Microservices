@@ -13,7 +13,11 @@ spec:
           - path: /api/auth/?(.*)
             backend: 
               serviceName: auth-serv
-              servicePort: 3002    
+              servicePort: 3002   
+          - path: /api/?(.*)
+            backend: 
+              serviceName: ticketing-serv
+              servicePort: 3001  
           - path: /?(.*)    
             backend: 
               serviceName: frontend-serv
